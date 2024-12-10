@@ -42,15 +42,15 @@ module.exports = {
   protectedRoutes: ['/Apps', '/Dekstop', '/Documents', '/Music', '/Pictures', '/Videos',],
 
   // [OPTIONAL] Use "" here if you want to remove this email address from the nav bar.
-  email: 'mailto:flackoboyz@outlook.com',
+  email: 'mailto:fractioush0e@gmail.com',
 
   // [OPTIONAL] This is an array of names and links for setting your social information and links.
   // In the latest update, all brand icons inside font awesome is supported and the icon to render is based on the name
   // you provide. See the documentation for details.
   links: [
     {
-      name: 'GitHub',
-      link: 'https://github.com/alawyyahdan',
+      name: 'Home',
+      link: 'https://sayato.lol',
     },
   ],
 
