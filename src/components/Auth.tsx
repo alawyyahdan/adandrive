@@ -22,8 +22,8 @@ const Auth: FC<{ redirect: string }> = ({ redirect }) => {
       <div className="text-lg font-bold text-gray-900 dark:text-gray-100">{'Enter Password'}</div>
 
       <p className="text-sm font-medium text-gray-500">
-        {'Hayolooooo!.... ngapain kesini? kok bisa buka-buka yang lain brok.... ' +
-          'Kalau lu tau yauda masukin aja passwordnya apa aowkwk!'}
+        {'Hayolooooo!.... ngapain kesini? kok bisa buka-buka yang lain brok....? ' +
+          'kalau lu tau yauda masukin aja passwordnya apa wkwkwk!'}
       </p>
 
       <div className="flex items-center space-x-2">
