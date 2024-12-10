@@ -49,7 +49,7 @@ module.exports = {
   // you provide. See the documentation for details.
   links: [
     {
-      name: 'Home',
+      name: 'globe',
       link: 'https://sayato.lol',
     },
   ],
