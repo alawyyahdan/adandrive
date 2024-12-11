@@ -7,7 +7,8 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <meta name="description" content="jangan salah pasangannnn jangan nyasar dijalannnn" />
-          <link rel="icon" href="/thumbnail.jpg" />
+          <meta property="og:image" content="/thumbnail.jpg" />
+          <link rel="icon" href="/favicon.ico" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
           {siteConfig.googleFontLinks.map(link => (
