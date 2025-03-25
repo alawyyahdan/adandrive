@@ -14,7 +14,7 @@ module.exports = {
   icon: '/icons/128.png',
 
   // The name of your website. Present alongside your icon.
-  title: "adan's OneDrive",
+  title: "adan's Drive",
 
   // The folder that you are to share publicly with onedrive-cf-index-ng. Use '/' if you want to share your root folder.
   baseDirectory: process.env.BASE_DIRECTORY || '/',
@@ -35,14 +35,14 @@ module.exports = {
   // [OPTIONAL] The footer component of your website. You can write HTML here, but you need to escape double
   // quotes - changing " to \". You can write anything here, and if you like badges, generate some with https://shields.io
   footer:
-    'Part of <a href="https://sayato.lol" target="_blank" rel="noopener noreferrer">sayato.lol</a>. Made with ❤ by adan gamteng.',
+    'My personal drive. Made with ❤ by adan gamteng.',
 
   // [OPTIONAL] This is where you specify the folders that are password protected. It is an array of paths pointing to all
   // the directories in which you have .password set. Check the documentation for details.
   protectedRoutes: ['/Apps', '/Dekstop', '/Documents', '/Music', '/Pictures', '/Videos',],
 
   // [OPTIONAL] Use "" here if you want to remove this email address from the nav bar.
-  email: 'mailto:fractioush0e@gmail.com',
+  email: 'mailto:contact@adan.lat',
 
   // [OPTIONAL] This is an array of names and links for setting your social information and links.
   // In the latest update, all brand icons inside font awesome is supported and the icon to render is based on the name
@@ -50,7 +50,7 @@ module.exports = {
   links: [
     {
       name: 'Home',
-      link: 'https://sayato.lol',
+      link: 'https://adan.lat',
     },
   ],
 
