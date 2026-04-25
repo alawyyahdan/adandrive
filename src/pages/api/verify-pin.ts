@@ -32,11 +32,34 @@ export default async function handler(req: NextRequest): Promise<Response> {
 
     // If Telegram is configured, send notification
     if (telegram?.token && telegram?.chatId) {
-      // Get location from Cloudflare headers
-      const ip = req.headers.get('cf-connecting-ip') || 'Unknown IP'
-      const country = req.headers.get('cf-ipcountry') || 'Unknown Country'
-      const city = req.headers.get('cf-ipcity') || 'Unknown City'
-      const location = `${city}, ${country}`
+      const ip = req.headers.get('cf-connecting-ip') || req.headers.get('x-forwarded-for') || 'Unknown IP'
+      const userAgent = req.headers.get('user-agent') || 'Unknown Device'
+      const referer = req.headers.get('referer') || 'Direct/None'
+
+      let isp = 'Unknown ISP'
+      let mapLink = 'N/A'
+      let detailedLocation = 'Unknown Location'
+
+      // Fetch detailed IP info if it's a valid public IP
+      if (ip && ip !== 'Unknown IP' && ip !== '127.0.0.1' && ip !== '::1') {
+        try {
+          // Take the first IP if there are multiple in x-forwarded-for
+          const cleanIp = ip.split(',')[0].trim()
+          const ipDataRes = await fetch(`http://ip-api.com/json/${cleanIp}`)
+          const ipData = await ipDataRes.json()
+          
+          if (ipData.status === 'success') {
+            detailedLocation = `${ipData.city}, ${ipData.regionName}, ${ipData.country}`
+            isp = ipData.isp
+            mapLink = `https://www.google.com/maps?q=${ipData.lat},${ipData.lon}`
+          }
+        } catch (e) {
+          // Fallback to Cloudflare headers if fetch fails
+          const country = req.headers.get('cf-ipcountry') || ''
+          const city = req.headers.get('cf-ipcity') || ''
+          detailedLocation = [city, country].filter(Boolean).join(', ') || 'Unknown Location'
+        }
+      }
 
       // Get WIB Time
       const wibTime = new Intl.DateTimeFormat('id-ID', {
@@ -45,7 +68,7 @@ export default async function handler(req: NextRequest): Promise<Response> {
         timeStyle: 'long',
       }).format(new Date())
 
-      const message = `🔔 *AdanDrive Login Alert*\n\n👤 *User:* ${user.name}\n🔑 *PIN:* ${user.pin}\n⏱ *Waktu (WIB):* ${wibTime}\n📍 *Lokasi:* ${location}\n🌐 *IP:* ${ip}`
+      const message = `🔔 *AdanDrive Login Alert*\n\n👤 *User:* ${user.name}\n🔑 *PIN:* ${user.pin}\n⏱ *Waktu (WIB):* ${wibTime}\n\n📍 *Lokasi:* ${detailedLocation}\n🏢 *Provider/ISP:* ${isp}\n🗺 *Maps:* [Buka Google Maps](${mapLink})\n\n🌐 *IP:* ${ip}\n📱 *Perangkat:* ${userAgent}\n🔗 *Referrer:* ${referer}`
 
       const url = `https://api.telegram.org/bot${telegram.token}/sendMessage`
       await fetch(url, {
