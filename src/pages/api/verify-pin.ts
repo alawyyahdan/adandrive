@@ -68,18 +68,35 @@ export default async function handler(req: NextRequest): Promise<Response> {
         timeStyle: 'long',
       }).format(new Date())
 
-      const message = `🔔 *AdanDrive Login Alert*\n\n👤 *User:* ${user.name}\n🔑 *PIN:* ${user.pin}\n⏱ *Waktu (WIB):* ${wibTime}\n\n📍 *Lokasi:* ${detailedLocation}\n🏢 *Provider/ISP:* ${isp}\n🗺 *Maps:* [Buka Google Maps](${mapLink})\n\n🌐 *IP:* ${ip}\n📱 *Perangkat:* ${userAgent}\n🔗 *Referrer:* ${referer}`
+      // Escape HTML function to prevent Telegram API parse errors
+      const escapeHtml = (text: string) => {
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;')
+      }
+
+      const message = `🔔 <b>AdanDrive Login Alert</b>\n\n👤 <b>User:</b> ${escapeHtml(user.name)}\n🔑 <b>PIN:</b> ${escapeHtml(user.pin)}\n⏱ <b>Waktu (WIB):</b> ${escapeHtml(wibTime)}\n\n📍 <b>Lokasi:</b> ${escapeHtml(detailedLocation)}\n🏢 <b>Provider/ISP:</b> ${escapeHtml(isp)}\n🗺 <b>Maps:</b> <a href="${mapLink}">Buka Google Maps</a>\n\n🌐 <b>IP:</b> ${escapeHtml(ip)}\n📱 <b>Perangkat:</b> ${escapeHtml(userAgent)}\n🔗 <b>Referrer:</b> ${escapeHtml(referer)}`
 
       const url = `https://api.telegram.org/bot${telegram.token}/sendMessage`
-      await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: telegram.chatId,
-          text: message,
-          parse_mode: 'Markdown',
-        }),
-      }).catch((e) => console.error('Failed to send Telegram notification:', e))
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: telegram.chatId,
+            text: message,
+            parse_mode: 'HTML',
+          }),
+        })
+        if (!response.ok) {
+          console.error('Telegram API Error:', await response.text())
+        }
+      } catch (e) {
+        console.error('Failed to send Telegram notification:', e)
+      }
     }
 
     return NextResponse.json({ success: true, name: user.name })

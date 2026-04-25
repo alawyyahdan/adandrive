@@ -12,9 +12,11 @@ const PinGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter()
 
   useEffect(() => {
-    // Check if user is already authenticated
-    const session = localStorage.getItem('user_pin_session')
-    if (session) {
+    // Check if user is already authenticated via cookie or localStorage
+    const cookieSession = document.cookie.split('; ').find(row => row.startsWith('user_pin_session='))
+    const localSession = localStorage.getItem('user_pin_session')
+    
+    if (cookieSession || localSession) {
       setIsAuthenticated(true)
     }
     setIsChecking(false)
@@ -47,6 +49,8 @@ const PinGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       const data = await res.json()
 
       if (res.ok && data.success) {
+        // Set persistent cookie (30 minutes) and localStorage
+        document.cookie = `user_pin_session=true; path=/; max-age=${60 * 30}`
         localStorage.setItem('user_pin_session', 'true')
         setIsAuthenticated(true)
       } else {
@@ -92,7 +96,6 @@ const PinGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 className="w-full rounded-xl border border-gray-200 bg-white/50 p-4 text-center text-2xl tracking-[0.5em] text-gray-900 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/20 dark:border-gray-600/50 dark:bg-gray-700/50 dark:text-white dark:focus:border-blue-400 dark:focus:bg-gray-700"
                 required
                 autoFocus
-                maxLength={8}
               />
             </div>
             {error && (
