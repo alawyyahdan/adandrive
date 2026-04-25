@@ -18,14 +18,12 @@ const FourOhFour: React.FC<{ errorMsg: string }> = ({ errorMsg }) => {
           <kbd className="rounded border border-gray-400/20 bg-gray-100 px-1 font-mono text-xs dark:bg-gray-800">
             F12
           </kbd>{' '}
-          and open devtools for more details, and report this issue to{' '}
+          and open devtools for more details, or email us at{' '}
           <a
             className="text-blue-600 hover:text-blue-700 hover:underline"
-            href="https://github.com/lyc8503/onedrive-cf-index-ng/issues"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="mailto:hello@bica.ca"
           >
-            onedrive-cf-index-ng issues
+            hello@bica.ca
           </a>
           .
         </div>

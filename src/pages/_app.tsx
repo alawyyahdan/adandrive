@@ -118,11 +118,15 @@ library.add(
   ...iconList
 )
 
+import PinGuard from '../components/PinGuard'
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <NextNProgress height={1} color="rgb(156, 163, 175, 0.9)" options={{ showSpinner: false }} />
-      <Component {...pageProps} />
+      <PinGuard>
+        <Component {...pageProps} />
+      </PinGuard>
     </>
   )
 }
