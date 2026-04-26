@@ -12,11 +12,15 @@ const PinGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter()
 
   useEffect(() => {
-    // Check if user is already authenticated via cookie or localStorage
+    // Check if user is already authenticated via cookie
     const cookieSession = document.cookie.split('; ').find(row => row.startsWith('user_pin_session='))
-    const localSession = localStorage.getItem('user_pin_session')
     
-    if (cookieSession || localSession) {
+    // Clear old localStorage session if it exists to force migration to cookies
+    if (localStorage.getItem('user_pin_session')) {
+      localStorage.removeItem('user_pin_session')
+    }
+    
+    if (cookieSession) {
       setIsAuthenticated(true)
     }
     setIsChecking(false)
@@ -49,9 +53,8 @@ const PinGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       const data = await res.json()
 
       if (res.ok && data.success) {
-        // Set persistent cookie (30 minutes) and localStorage
+        // Set persistent cookie (30 minutes)
         document.cookie = `user_pin_session=true; path=/; max-age=${60 * 30}`
-        localStorage.setItem('user_pin_session', 'true')
         setIsAuthenticated(true)
       } else {
         setError(data.message || 'PIN is incorrect')
@@ -68,7 +71,7 @@ const PinGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <Head>
         <title>Login</title>
       </Head>
-      <div className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
         {/* Decorative background shapes */}
         <div className="absolute top-10 left-10 h-72 w-72 rounded-full bg-blue-300 opacity-20 mix-blend-multiply blur-3xl filter dark:bg-blue-900 dark:opacity-40"></div>
         <div className="absolute bottom-10 right-10 h-72 w-72 rounded-full bg-purple-300 opacity-20 mix-blend-multiply blur-3xl filter dark:bg-purple-900 dark:opacity-40"></div>
@@ -108,8 +111,27 @@ const PinGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               disabled={loading || !pin}
               className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 p-4 font-bold text-white shadow-lg transition-all hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 disabled:opacity-50"
             >
-              {loading ? <FontAwesomeIcon icon="circle-notch" spin /> : 'Unlock Access'}
+              {loading ? (
+                <>
+                  <FontAwesomeIcon icon="circle-notch" spin className="mr-2" />
+                  Verifying...
+                </>
+              ) : (
+                'Unlock Access'
+              )}
             </button>
+            
+            <div className="group relative mt-4 text-center">
+              <span className="cursor-help text-sm text-blue-600 hover:underline dark:text-blue-400">
+                No Pin?
+              </span>
+              <div className="pointer-events-none absolute left-1/2 -ml-24 mt-2 w-48 rounded-lg bg-gray-900 p-2 text-sm text-white opacity-0 shadow-lg transition-opacity duration-300 group-hover:pointer-events-auto group-hover:opacity-100 dark:bg-gray-700">
+                Contact admin at <br />
+                <a href="mailto:hello@bica.ca" className="font-semibold text-blue-300 hover:text-blue-200 hover:underline">
+                  hello@bica.ca
+                </a>
+              </div>
+            </div>
           </form>
         </div>
       </div>
